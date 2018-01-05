@@ -70,14 +70,14 @@ case $opt in
 			       --backtitle $BACKTITLE \
 			       --title "" \
 			       --checklist "Mannschaft auswählen..." \
-			       0 0 6 "${LST_ASWIMMER[@]}"))
+			       0 0 10 "${LST_ASWIMMER[@]}"))
 	if test $? -eq 1
 	then
 	    dialog --clear && clear && exit
 	fi	    
 
 	### Punktetabelle auswählen
-	if [ $gender=$k_male ]; then
+	if [ "$gender" = "$k_male" ]; then
 	    files=basetimes/dms-base-male*.dat
 	else
 	    files=basetimes/dms-base-female*.dat
