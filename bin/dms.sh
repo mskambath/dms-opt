@@ -7,7 +7,7 @@ if [ -z "$1" ]; then
     echo $0" new [<team> [<gender>]]"
     echo $0" list"
     echo $0" delete  <team>"
-    echo $0" compute <team>"
+    echo $0" compute <team> [<times>]"
     echo $0" show <team>"
     exit
 fi
@@ -133,13 +133,21 @@ case $opt in
     	;;
     
     "compute")
+	if [ ! -z "$3" ]; then
+	    timef=$3
+	else
+	    timef=dms-times.csv  
+	fi
+	
 	team=$2
+
+	
 	gender=$(cat teams/$team/gender)
 	basetimes=$(cat teams/$team/basetimes)
 
 
 	./tools/create_dms_settings.rb $gender 2 > teams/$team/dms-settings.dat
-	./tools/create_dms_gmpltimetable.rb $team   > teams/$team/dms-data.dat
+	./tools/create_dms_gmpltimetable.rb $team $timef > teams/$team/dms-data.dat
 
 	if [ ! -f teams/$team/dms-constraints.dat ]; then
 	    ./tools/create_dms_constraints.rb 2 $team > teams/$team/dms-constraints.dat

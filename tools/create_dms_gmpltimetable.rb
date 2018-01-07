@@ -3,26 +3,32 @@ require 'csv'
 require_relative 'inc/dmsf'
 
 ### Argument Checking:
-if not ARGV.length == 1 then
+if not (ARGV.length == 1 or ARGV.length==2) then
   print "DMS-Aufstellung [Zeiterfassung]\n"
-  if ARGV.length > 1 then
+  if ARGV.length > 2 then
     print "Too many arguments found!\n"
   end
   if ARGV.length < 1 then
     print "Missing at least one argument!\n"
   end
-  print "\nUsage:\ncreate_dms_gmpltimetable <team>\n"
-  print "  team:  The name of the team\n"
+  print "\nUsage:\ncreate_dms_gmpltimetable <team> [timef]\n"
+  print "  team:   The name of the team\n"
+  print "  timef:  A CSV-file containing all times for all swimmers.\n"
   exit
 end
 
+team_name = ARGV[0]
 
+timef = "dms-times.csv"
+if ARGV.length==2 then
+  timef = ARGV[1]
+end
 
 inteam = {}
 
 
-teamf   = "teams/" + ARGV[0] + "/team"
-genderf = "teams/" + ARGV[0] + "/gender"
+teamf   = "teams/" + team_name + "/team"
+genderf = "teams/" + team_name + "/gender"
 gender  = ""
 File.readlines(teamf).each{|line|  inteam[line.chomp] = true}
 File.readlines(genderf).each{|line| gender = line.chomp}
@@ -30,7 +36,6 @@ File.readlines(genderf).each{|line| gender = line.chomp}
 dms = read_dms_config(CONFIG_FILE)
 dms_strecken,dms_instrecken = extract_ltcs(dms, gender)
 
-timef = "dms-times.csv"
 
 print "data;\n"
 print "param bestzeit:"
