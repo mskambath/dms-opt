@@ -14,6 +14,7 @@ if not (ARGV.length == 1 or ARGV.length==2) then
   print "\nUsage:\ncreate_dms_gmpltimetable <team> [timef]\n"
   print "  team:   The name of the team\n"
   print "  timef:  A CSV-file containing all times for all swimmers.\n"
+  print "          If undefined 'dms-times.csv' will be used."
   exit
 end
 
@@ -43,6 +44,7 @@ print "param bestzeit:"
 idx    = 0
 
 ltc = []
+covered = {}
 CSV.foreach(timef) do |row|
   if idx == 0 then
     # col-0 contains the name
@@ -59,14 +61,12 @@ CSV.foreach(timef) do |row|
     print '"' + row[0] + '"'
     for i in 2...row.length do
       ltc_key = ltc[i-2]
-      #print row[0]+" "+ltc_key +"\t"
-      time = row[i]
+      time    = row[i]
       if dms_instrecken[ltc_key] then
         print "\t" +'"' +  normalizeTimeString(time) + '"'
-        #print normalizeTimeString(row[i])
       end
-      #print "\n"
     end
+    covered[row[0]] = true
     print "\n"
   end
   

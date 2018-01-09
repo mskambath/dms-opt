@@ -4,11 +4,23 @@ k_male="M"
 BACKTITLE="DMS-Aufstellung"
 if [ -z "$1" ]; then
     echo $0" <command> args"
-    echo $0" new [<team> [<gender>]]"
+    echo ""
+    echo "* Commands"
+    echo $0" new [<team> [<sex> [<times>]]]"
+    echo "    Configurate a new team."
     echo $0" list"
+    echo "    List all available teams."
     echo $0" delete  <team>"
+    echo "    Deletes a team. This cannot be undone!"
     echo $0" compute <team> [<times>]"
+    echo "    Compute a DMS-Assignment."
     echo $0" show <team>"
+    echo "   Show the members and basic configurations of a team."
+    echo 
+    echo "* Options"
+    echo "  team:    A team name"
+    echo "  times:   A CSV file containing all times for each swimmer."
+    echo "  sex:     F for female, M for male teams."  
     exit
 fi
 opt=$1
@@ -49,6 +61,13 @@ case $opt in
 	else
 	    gender=$3
 	fi
+
+	### Zeitentabelle auswählen
+	if [ -z "$4" ]; then
+	   TIMES_FILE="dms-times.csv"
+	else
+	   TIMES_FILE=$4
+	fi
 	
 	### Mannschaft auswählen.
 	LST_ASWIMMER=()
@@ -57,7 +76,7 @@ case $opt in
 	FS_OLS=$FS
 	IFS=$'\n'#;FS='\n'
 	CNT_ASWIMMER=0
-	for swimmer in $(tools/extract_swimmer.rb dms-times.csv $gender)
+	for swimmer in $(tools/extract_swimmer.rb $TIMES_FILE $gender)
 	do
 	    CNT_ASWIMMER=$(($CNT_ASWIMMER+1))
 	    LST_ASWIMMER+=($CNT_ASWIMMER "$swimmer" off)
