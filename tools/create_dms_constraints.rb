@@ -54,10 +54,14 @@ print '/* Verbiete einen bestimmten Start eines Schwimmers z.B.: ("Martin Muster
 print "\n\n"
 
 print "set block_strpaare   := ;\n"
-print "/* blockiert 2 Strecken innerhalb eines Abschnittes z.B.: (1500F,100S) */\n\n"
+print "/* blockiert 2 Strecken innerhalb eines Abschnittes für alle Schwimmer z.B.: (1500F,100S) */\n\n"
+
+print "set block_swimmer_strpaare := ;\n"
+print '/* blockiert 2 Strecken innerhalb eines Abschnittes für einen Schwimmer z.B.: ("Martin Mustermann",400F,200S) */'
+print "\n\n"
 
 print "set block_wkpaare    := ;\n"
-print "/* blockiert 2 Wettkämpfe (abschnittsübergreifend) z.B.: (1500F,I,100S,I) */\n\n"
+print "/* blockiert 2 Wettkämpfe (abschnittsübergreifend) für jeden Schwimmer z.B.: (1500F,I,100S,I) */\n\n"
 
 
 ######################

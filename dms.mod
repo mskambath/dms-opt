@@ -30,13 +30,16 @@ param pausenzeit{st1 in Strecken, st2 in Strecken}
 set Schwimmer;   
 
 /* alle möglichen Starts */
-set Starts := Schwimmer cross WK; 
+set Starts       := Schwimmer cross WK; 
+set Startpaar    := Schwimmer cross WK cross WK;
+set Streckenpaar := Strecken cross Strecken;
 
 /* Vorgegebene und blockierte Starts */
 set feste_starts  within Starts;
 set block_starts  within Starts;
 set block_wkpaare within WK cross WK;
 set block_strpaare within Strecken cross Strecken;
+set block_swimmer_strpaare within Schwimmer cross Streckenpaar;
 
 /* Vorgegebene und blockierte Strecken */
 set feste_strecken within Schwimmer cross Strecken;
@@ -133,6 +136,11 @@ s.t. stpaar_abs_blockade{
         (st1,st2) in block_strpaare,
         sw in Schwimmer}:
     x[sw,st1,abs] + x[sw,st2,abs] <= 1;
+s.t. stpaar_abs_blockade_sw{
+        abs in Abschnitte,
+	(sw,st1,st2) in block_swimmer_strpaare}:
+    x[sw,st1,abs] + x[sw,st2,abs] <= 1;
+
 /* Vorgaben und Blockaden */
 
 solve;

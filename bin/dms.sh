@@ -16,6 +16,8 @@ if [ -z "$1" ]; then
     echo "    Compute a DMS-Assignment."
     echo $0" show <team>"
     echo "   Show the members and basic configurations of a team."
+    echo $0" remove <team> {<swimmer>}"
+    echo "   Remove swimmers from a team."
     echo 
     echo "* Options"
     echo "  team:    A team name"
@@ -130,7 +132,7 @@ case $opt in
 	done
 	timetable=$(echo $timetable| cut -c20-)
 	timetable=${timetable%%.*}
-	echo $timetable >> teams/$teamname/basetimes
+	echo $timetable > teams/$teamname/basetimes
 	
 	;;
 
@@ -142,6 +144,20 @@ case $opt in
     	team=$2	
     	rm -Rf teams/$team
     	;;
+
+    "remove")
+	team=$2	
+	i=0
+	for var in "$@"
+	do
+	    (( i++ ))
+	    if [ $i -gt 2 ]; then
+		echo "Delete '$var' from team '$team'."
+		cat teams/$team/team                | grep "$var" -v  > teams/$team/team
+		cat teams/$team/dms-constraints.dat | grep "$var" -v  > teams/$team/dms-constraints.dat
+	    fi
+	done
+	;;
     
     "show")
     	team=$2	
@@ -164,17 +180,27 @@ case $opt in
 	gender=$(cat teams/$team/gender)
 	basetimes=$(cat teams/$team/basetimes)
 
-
+	echo "[DMS_OPT] Update DMS-Settings (Meeting, Events,...)"
 	./tools/create_dms_settings.rb $gender 2 > teams/$team/dms-settings.dat
+	echo "[DMS_OPT] Update Times for DMS-Computation"
 	./tools/create_dms_gmpltimetable.rb $team $timef > teams/$team/dms-data.dat
 
 	if [ ! -f teams/$team/dms-constraints.dat ]; then
+	    echo "[DMS_OPT] Create a Default-Constraint File."
 	    ./tools/create_dms_constraints.rb 2 $team > teams/$team/dms-constraints.dat
 	else
-		    echo "Skipped creating a constraint file."
+	    echo "[DMS_OPT] Skipped creating a constraint file."
 	fi
 
+	echo "[DMS_OPT] Compute Team '$team' using times from $timef"
+	
 	glpsol -m dms.mod \
+	       -d teams/$team/dms-settings.dat \
+	       -d basetimes/dms-base-$basetimes.dat \
+	       -d teams/$team/dms-constraints.dat \
+	       -d teams/$team/dms-data.dat
+
+	echo glpsol -m dms.mod \
 	       -d teams/$team/dms-settings.dat \
 	       -d basetimes/dms-base-$basetimes.dat \
 	       -d teams/$team/dms-constraints.dat \
