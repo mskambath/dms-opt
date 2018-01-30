@@ -37,7 +37,9 @@ def is_entry_row(row)
   if row==nil then return false end
   if row.length < 5 then return false end
   if row[2] == nil then return false end
-  return row[2].scan(/\d\d\d\d/).length==1 
+  is_record_line = (row[1].scan(/Rekord/).length==0)
+  is_year_col2_line = (row[2].scan(/\d\d\d\d/).length==1)
+  return (is_year_col2_line and is_record_line)
 end
 
 # Pl, Name, Jg.,Zeit,...
@@ -51,12 +53,17 @@ while row<=sheet.last_row do
         ltc[ltc_key] = true
         ltc_lst[ltc_lst.length] = ltc_key
       end
-      row = row+2
+      row=row + 1
+      while row<=sheet.last_row and not( is_entry_row(sheet.row(row))) do
+        row = row + 1
+      end
       while  row<=sheet.last_row and is_entry_row(sheet.row(row)) do
         time = sheet.row(row)[3]
         name = sheet.row(row)[1]
-        n = name.split(",")
-        name = n[1].strip + " " + n[0].strip
+        if name.include?(",") then
+          n = name.split(",")
+          name = n[1].strip + " " + n[0].strip
+        end
         if not swimmer_map[name] then
           swimmer_lst[swimmer_lst.length] = name
           swimmer_map[name] = {}
