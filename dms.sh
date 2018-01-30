@@ -137,7 +137,10 @@ case $opt in
 	;;
 
     "list")
-	ls teams | tr " " "\n"
+	cd teams
+	#ls teams | tr " " "\n"
+	find . -maxdepth 1 -type d | tr -d "./" 
+	cd ..
 	;;
 
     "delete")
@@ -153,8 +156,12 @@ case $opt in
 	    (( i++ ))
 	    if [ $i -gt 2 ]; then
 		echo "Delete '$var' from team '$team'."
-		cat teams/$team/team                | grep "$var" -v  > teams/$team/team
-		cat teams/$team/dms-constraints.dat | grep "$var" -v  > teams/$team/dms-constraints.dat
+		cat teams/$team/team                | grep "$var" -v  > teams/$team/team.new
+		cat teams/$team/dms-constraints.dat | grep "$var" -v  > teams/$team/dms-constraints.dat.new
+		mv teams/$team/dms-constraints.dat teams/$team/dms-constraints.dat.old
+		mv teams/$team/team teams/$team/team.old
+		mv teams/$team/dms-constraints.dat.new teams/$team/dms-constraints.dat
+		mv teams/$team/team.new teams/$team/team
 	    fi
 	done
 	;;

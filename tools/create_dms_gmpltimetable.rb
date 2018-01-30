@@ -27,12 +27,15 @@ end
 
 inteam = {}
 
-
 teamf   = "teams/" + team_name + "/team"
 genderf = "teams/" + team_name + "/gender"
 gender  = ""
 File.readlines(teamf).each{|line|  inteam[line.chomp] = true}
 File.readlines(genderf).each{|line| gender = line.chomp}
+
+#puts inteam
+#p teamf
+#p team_name
 
 dms = read_dms_config(CONFIG_FILE)
 dms_strecken,dms_instrecken = extract_ltcs(dms, gender)
@@ -45,6 +48,7 @@ idx    = 0
 
 ltc = []
 covered = {}
+
 CSV.foreach(timef) do |row|
   if idx == 0 then
     # col-0 contains the name

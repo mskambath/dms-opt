@@ -33,7 +33,7 @@ File.readlines("teams/"+team+"/team").each{|s|
 print "data;\n"
 
 print "set Schwimmer := \n  "
-swimmer.each{|s| print ' "' + s +  '"'}
+swimmer.each{|s| print ' "' + s +  '"\n'}
 print ";\n"
 print "/* Alle zur Verfügung stehenden Schwimmer */\n\n"
 
