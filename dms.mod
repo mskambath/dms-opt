@@ -123,8 +123,8 @@ s.t. pause_allg{
      x[sw,st1,abs]+x[sw,st2,abs] <= 1; 
 /* Die allgemeinen Pausenzeiten jedes Schwimmers müssen eingehalten werden*/
 
-s.t. start_vorgabe{ (sw,abs,st) in feste_starts}:  x[sw,st,abs] = 1;
-s.t. start_blockade{(sw,abs,st) in block_starts}:  x[sw,st,abs] = 0;
+s.t. start_vorgabe{ (sw,st,abs) in feste_starts}:  x[sw,st,abs] = 1;
+s.t. start_blockade{(sw,st,abs) in block_starts}:  x[sw,st,abs] = 0;
 s.t. strecken_vorgabe{(sw,st) in feste_strecken}:
      sum{abs in Abschnitte} x[sw,st,abs] = 1;
 s.t. strecken_blockade{(sw,st) in block_strecken}:
